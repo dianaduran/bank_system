@@ -13,6 +13,12 @@ module.exports = function(app, passport) {
         }
      ));
 
+     app.get('/account',isLoggedIn, authController.account);
+
+     app.get('/loan',isLoggedIn, authController.loan);
+
+     app.get('/transaction',isLoggedIn, authController.transaction);
+
      app.get('/dashboard',isLoggedIn, authController.dashboard);
    
      app.get('/logout',authController.logout);

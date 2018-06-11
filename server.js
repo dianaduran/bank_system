@@ -6,11 +6,9 @@ var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
 
 //For Handlebars
-app.set('views', './app/views')
-app.engine('hbs', exphbs({
-    extname: '.hbs'
-}));
-app.set('view engine', '.hbs');
+app.set('views', './app/views');
+app.engine("handlebars", exphbs({ defaultLayout: "main", layoutsDir:'app/views/layouts' }));
+app.set("view engine", ".handlebars");
 
 //For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,6 +23,16 @@ app.use(passport.session()); // persistent login sessions
 var models = require("./models");
 models.account.belongsTo(models.customer);
 models.customer.hasMany(models.account);
+
+models.loan.belongsTo(models.customer);
+models.customer.hasMany(models.loan);
+
+models.txnjournal.belongsTo(models.account);
+models.account.hasMany(models.txnjournal);
+
+models.txnjournal.belongsTo(models.loan);
+models.loan.hasMany(models.txnjournal);
+
 
 //load passport strategies
 require('./config/passport/passport.js')(passport, models.customer);
@@ -43,7 +51,7 @@ models.sequelize.sync().then(function() {
 
 //Routes
 var authRoute = require('./app/routes/auth.js')(app,passport);
-
+require("./app/routes/account-routh")(app);
 
 
 
